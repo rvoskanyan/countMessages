@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Отправка сообщений</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="root">
+    <div class="table-messages">
+        <table class="table-messages__table">
+            <thead>
+                <tr class="table__header-row">
+                    <th>Email</th>
+                    <th>Сообщения для данного Email</th>
+                </tr>
+            </thead>
+            <tbody id="listMessages"></tbody>
+        </table>
+    </div>
+    <br>
+    <br>
+    <div class="form-send">
+        <div class="form">
+            <input id="email" placeholder="E-mail" class="textbox" type="email" required />
+            <textarea rows="4" cols="50" id="message" placeholder="Сообщение:" class="message" required></textarea>
+            <input class="button" type="button" value="Отправить" onclick="send()"/>
+            <br>
+            <br>
+            <input class="button clear" type="button" value="Очистить" onclick="clearMessages()"/>
+        </div>
+    </div>
+    <script src="scripts.js"></script>
+</div>
+</body>
+</html>
