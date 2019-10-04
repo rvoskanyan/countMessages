@@ -1,24 +1,56 @@
-.table-messages {
+.messages-history {
     display: flex;
     justify-content: center;
 }
 
-table {
-    width: 600px; /* Ширина таблицы */
-    background: #fffff0; /* Цвет фона нечетных строк */
-    border: 1px solid #a52a2a; /* Рамка вокруг таблицы */
-    border-collapse: collapse; /* Убираем двойные линии между ячейками */
+.table {
+    width: 100%;
+    border: 1px solid #a52a2a;
 }
-td, th {
-    padding: 5px; /* Поля вокруг содержимого ячейки */
+
+.messages-history__table {
+    max-width: 600px;
 }
-td {
-    text-align: center; /* Выравнивание по центру */
-    border-bottom: 1px solid #a52a2a; /* Линия внизу ячейки */
+
+.table__header {
+    background-color: #a52a2a;
+    font-weight: bold;
+    color: #fff;
 }
-th {
-    background: #a52a2a; /* Цвет фона */
-    color: white; /* Цвет текста */
+
+.table__body {
+    background-color: #fffff0;
+}
+
+.row {
+    display: flex;
+}
+
+.row .row {
+    width: 100%;
+}
+
+.element {
+    padding: 5px 10px;
+    border: 1px solid #a52a2a;
+}
+
+.rowMessage {
+    border: 1px solid #a52a2a;
+    display: flex;
+    margin: 5px 0;
+    padding: 5px 0;
+}
+
+.col {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.col.del {
+    width: 10px;
+    margin-right: 15px;
 }
 
 .form-send {

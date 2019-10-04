@@ -7,23 +7,23 @@
 </head>
 <body>
 <div id="root">
-    <div class="table-messages">
-        <table class="table-messages__table">
-            <thead>
-                <tr class="table__header-row">
-                    <th>Email</th>
-                    <th>Сообщения для данного Email</th>
-                </tr>
-            </thead>
-            <tbody id="listMessages"></tbody>
-        </table>
+    <div class="messages-history">
+        <div class="messages-history__table table">
+            <div class="table__header">
+                <div class="row">
+                    <div class="col">Email</div>
+                    <div class="col">Сообщения для данного Email</div>
+                </div>
+            </div>
+            <div class="table__body" id="listMessages"></div>
+        </div>
     </div>
     <br>
     <br>
     <div class="form-send">
         <div class="form">
-            <input id="email" placeholder="E-mail" class="textbox" type="email" required />
-            <textarea rows="4" cols="50" id="message" placeholder="Сообщение:" class="message" required></textarea>
+            <input type="email" id="email" placeholder="E-mail" class="textbox" required />
+            <textarea rows="4" cols="50" id="text" placeholder="Сообщение:" class="message" required></textarea>
             <input class="button" type="button" value="Отправить" onclick="send()"/>
             <br>
             <br>
