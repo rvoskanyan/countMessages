@@ -42,7 +42,6 @@ class Messages {
                     if(index === 0) return;
                     if(item.id == id_message) {
                         messages[index_email].messages.splice(index, 1);
-                        messages[index_email].messages[0]--;
 
                         this.messagesJSON = JSON.stringify(messages);
                         return true;
@@ -62,13 +61,42 @@ class Messages {
             if(index === 0) return;
             if(item.id == id_email) {
                 messages.splice(index, 1);
-                messages[0]--;
 
                 this.messagesJSON = JSON.stringify(messages);
                 return true;
             }
         });
 
+        this.reloadLocaleStorage();
+    }
+
+    swapMessages(idEmail, idMessageFrom, idMessageTo) {
+        let messages = JSON.parse(this.messagesJSON);
+
+        messages.find((item, index) => {
+            if(index === 0) return;
+            if(item.id == idEmail) {
+                let indexMessagesFrom = null;
+                let indexMessagesTo = null;
+                let Email = messages[index].messages;
+                item.messages.find((item, index) => {
+                    if(index === 0) return;
+                    if(item.id == idMessageFrom) {
+                        indexMessagesFrom = index;
+                    }
+                    if(item.id == idMessageTo) {
+                        indexMessagesTo = index;
+                    }
+                    if(indexMessagesFrom && indexMessagesTo) {
+                        [Email[indexMessagesTo], Email[indexMessagesFrom]] = [Email[indexMessagesFrom], Email[indexMessagesTo]];
+                        return true;
+                    }
+                });
+                return true;
+            }
+        });
+
+        this.messagesJSON = JSON.stringify(messages);
         this.reloadLocaleStorage();
     }
 
@@ -86,6 +114,8 @@ class Executor {
 
     messagesJSON;
     objectMessages;
+    replaceFrom;
+    replaceTo;
 
     constructor(objectMessages) {
         this.objectMessages = objectMessages;
@@ -172,7 +202,6 @@ class Executor {
                     if(item.id == id_message) {
                         this.objectMessages.deleteMessage(id_message, id_email);
                         messages[index_email].messages.splice(index, 1);
-                        messages[index_email].messages[0]--;
 
                         this.messagesJSON = JSON.stringify(messages);
                         return true;
@@ -193,7 +222,6 @@ class Executor {
             if(item.id == id_email) {
                 this.objectMessages.deleteMessages(id_email);
                 messages.splice(index, 1);
-                messages[0]--;
 
                 this.messagesJSON = JSON.stringify(messages);
                 return true;
@@ -206,6 +234,45 @@ class Executor {
     clearMessages() {
         this.objectMessages.clearMessages();
         this.messagesJSON = JSON.stringify([1]);
+        this.renderTable();
+    }
+
+    swap() {
+        let idEmailFrom = this.replaceFrom.split('-')[0];
+        let idEmailTo = this.replaceTo.split('-')[0];
+
+        if(idEmailFrom !== idEmailTo) return;
+
+        let idMessageFrom = this.replaceFrom.split('-')[1];
+        let idMessageTo = this.replaceTo.split('-')[1];
+
+        let messages = JSON.parse(this.messagesJSON);
+
+        messages.find((item, index) => {
+            if(index === 0) return;
+            if(item.id == idEmailFrom) {
+                let Email = messages[index].messages;
+                let indexMessagesFrom = null;
+                let indexMessagesTo = null;
+                item.messages.find((item, index) => {
+                    if(index === 0) return;
+                    if(item.id == idMessageFrom) {
+                        indexMessagesFrom = index;
+                    }
+                    if(item.id == idMessageTo) {
+                        indexMessagesTo = index;
+                    }
+                    if(indexMessagesFrom && indexMessagesTo) {
+                        [Email[indexMessagesTo], Email[indexMessagesFrom]] = [Email[indexMessagesFrom], Email[indexMessagesTo]];
+                        return true;
+                    }
+                });
+                return true;
+            }
+        });
+
+        this.objectMessages.swapMessages(idEmailFrom, idMessageFrom, idMessageTo);
+        this.messagesJSON = JSON.stringify(messages);
         this.renderTable();
     }
 
@@ -292,6 +359,11 @@ class Executor {
                     let button = document.createElement("button");
 
                     rowMessage.className = "rowMessage";
+                    rowMessage.setAttribute('draggable', 'true');
+                    rowMessage.addEventListener('dragstart', setReplaceFrom, false);
+                    rowMessage.addEventListener('dragleave', setReplaceTo, false);
+                    rowMessage.addEventListener('dragend', swap, false);
+                    rowMessage.id = messages[i].id + '-' + messagesArray[j].id;
                     colNumber.className = "col";
                     colText.className = "col";
                     colDel.className = "col del";
@@ -332,6 +404,10 @@ function send() {
         alert('Не верный E-mail');
         return;
     }
+    if(text == '') {
+        alert('Введите текст сообщения!');
+        return;
+    }
 
     executor.sendMessage(email, text);
 
@@ -351,4 +427,16 @@ function clearMessages() {
     if(confirm('Удалить все сообщения?')) {
         executor.clearMessages();
     }
+}
+
+function setReplaceFrom() {
+    executor.replaceFrom = this.id;
+}
+
+function setReplaceTo() {
+    executor.replaceTo = this.id;
+}
+
+function swap() {
+    executor.swap();
 }
