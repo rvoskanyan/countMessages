@@ -151,9 +151,12 @@ class Executor {
 
     sendMessage(email, text) {
         let messages = JSON.parse(this.messagesJSON);
+        let stopIndex = null;
 
         let result = messages.find((item, index) => {
             if(index === 0) return;
+
+            item.opened = false;
 
             if(item.email === email) {
                 let message = {
@@ -162,13 +165,22 @@ class Executor {
                 };
 
                 item.messages[0]++;
+                item.opened = true;
                 messages[index].messages.push(message);
 
                 this.objectMessages.addMessage(JSON.stringify(message), messages[index].id);
+                stopIndex = index;
 
                 return true;
             }
         });
+
+        if(stopIndex) {
+            stopIndex++;
+            for(let i = stopIndex; i < messages.length; i++) {
+                messages[i].opened = false;
+            }
+        }
 
         if(!result) {
             let message = {
